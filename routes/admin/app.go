@@ -1,11 +1,12 @@
 package admin
 
 import (
+	"database/sql"
 	"github.com/gorilla/mux"
 	"net/http"
 )
 
-func AppSubrouter(r *mux.Router) {
+func AppSubrouter(r *mux.Router, db *sql.DB) {
 
 	subrouter := r.PathPrefix("/app").Subrouter()
 

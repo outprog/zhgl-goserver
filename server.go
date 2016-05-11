@@ -1,7 +1,9 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"net/http"
 
@@ -9,6 +11,13 @@ import (
 )
 
 func main() {
+
+	// connect db
+	db, err := sql.Open("mysql", "root@/mis")
+	if err != nil {
+		fmt.Println("database error")
+	}
+	defer db.Close()
 
 	r := mux.NewRouter()
 	// Routes consist of a path and a handler function.
@@ -21,9 +30,9 @@ func main() {
 		w.Write([]byte("services\n"))
 	})
 	// services list
-	routes.AdminSubrouter(services)
+	routes.AdminSubrouter(services, db)
 
 	// Bind to a port and pass our router in
-	fmt.Println("services start :8080")
+	fmt.Println("services start :8000")
 	http.ListenAndServe(":8000", r)
 }

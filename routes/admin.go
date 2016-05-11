@@ -1,13 +1,14 @@
 package routes
 
 import (
+	"database/sql"
 	"github.com/gorilla/mux"
 	"net/http"
 
 	"zhgl-goserver/routes/admin"
 )
 
-func AdminSubrouter(r *mux.Router) {
+func AdminSubrouter(r *mux.Router, db *sql.DB) {
 
 	subrouter := r.PathPrefix("/admin").Subrouter()
 
@@ -16,8 +17,8 @@ func AdminSubrouter(r *mux.Router) {
 	})
 
 	// subrouter list
-	admin.UserSubrouter(subrouter)
-	admin.DeptSubrouter(subrouter)
-	admin.AppSubrouter(subrouter)
+	admin.UserSubrouter(subrouter, db)
+	admin.DeptSubrouter(subrouter, db)
+	admin.AppSubrouter(subrouter, db)
 
 }
