@@ -2,10 +2,13 @@ package admin
 
 import (
 	"database/sql"
-	"fmt"
+	"github.com/elgs/gosqljson"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+
+	"zhgl-goserver/lib/md5passwd"
+	"zhgl-goserver/lib/stdres"
 )
 
 func UserSubrouter(r *mux.Router, db *sql.DB) {
@@ -16,26 +19,35 @@ func UserSubrouter(r *mux.Router, db *sql.DB) {
 		w.Write([]byte("user\n"))
 	})
 
-	// get passwd
-	subrouter.HandleFunc("/confirm-passwd/{userid}", func(w http.ResponseWriter, r *http.Request) {
+	// get user info and confirm passwd
+	subrouter.HandleFunc("/confirm-passwd/{userid}/{passwd}", func(w http.ResponseWriter, r *http.Request) {
+
 		userid := mux.Vars(r)["userid"]
-		rows, err := db.Query("SELECT user_name FROM userlist where user_id=?", userid)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer rows.Close()
-		var USER_NAME string
-		for rows.Next() {
-			if err := rows.Scan(&USER_NAME); err != nil {
-				log.Fatal(err)
+		passwd := md5passwd.Get(mux.Vars(r)["passwd"])
+		var stat, info string
+
+		log.Println("user:", userid, "confirm passwd")
+
+		data, _ := gosqljson.QueryDbToMap(db, "upper", "SELECT * FROM userlist where user_id=?", userid)
+
+		if len(data) == 1 {
+			if passwd == data[0]["USER_PASSWORD"] {
+				stat = "true"
+				info = ""
+				delete(data[0], "USER_PASSWORD")
+			} else {
+				data = data[:0]
+				stat = "false"
+				info = "wrong password"
 			}
-			fmt.Printf("%s\n", USER_NAME)
+		} else {
+			stat = "false"
+			info = "no user"
 		}
-		if err := rows.Err(); err != nil {
-			log.Fatal(err)
-		}
-		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		w.Write([]byte(USER_NAME))
+
+		res := stdres.Get(data, stat, info)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(res)
 	})
 
 }

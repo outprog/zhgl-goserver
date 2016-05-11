@@ -2,20 +2,25 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	"log"
+	"net/http"
+	"os"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
-	"net/http"
 
 	"zhgl-goserver/routes"
 )
 
 func main() {
+	// set log
+	log.SetOutput(os.Stdout)
+	log.SetFlags(log.Ldate | log.Ltime)
 
 	// connect db
 	db, err := sql.Open("mysql", "root@/mis")
 	if err != nil {
-		fmt.Println("database error")
+		log.Println("database error")
 	}
 	defer db.Close()
 
@@ -33,6 +38,6 @@ func main() {
 	routes.AdminSubrouter(services, db)
 
 	// Bind to a port and pass our router in
-	fmt.Println("services start :8000")
+	log.Println("services started at port:8000")
 	http.ListenAndServe(":8000", r)
 }
