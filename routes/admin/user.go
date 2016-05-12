@@ -43,7 +43,14 @@ func UserSubrouter(r *mux.Router, db *sql.DB) {
 
 		log.Println("user:", userid, "confirm password")
 
-		data, _ := gosqljson.QueryDbToMap(db, "upper", "SELECT * FROM userlist where user_id=?", userid)
+		data, _ := gosqljson.QueryDbToMap(db, "upper",
+			"SELECT t.user_id, "+
+				"   t.user_name, "+
+				"   t.user_password, "+
+				"   t.user_status, "+
+				"   (SELECT dept_id FROM mis.rel_user_dep where user_id = t.user_id) as dept_id "+
+				" FROM userlist t where t.user_id=?",
+			userid)
 
 		if len(data) == 1 {
 			if passwd == data[0]["USER_PASSWORD"] {
