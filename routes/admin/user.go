@@ -7,8 +7,8 @@ import (
 	"log"
 	"net/http"
 
+	"zhgl-goserver/lib/httpjsondone"
 	"zhgl-goserver/lib/md5passwd"
-	"zhgl-goserver/lib/stdres"
 )
 
 func UserSubrouter(r *mux.Router, db *sql.DB) {
@@ -19,14 +19,29 @@ func UserSubrouter(r *mux.Router, db *sql.DB) {
 		w.Write([]byte("user\n"))
 	})
 
-	// get user info and confirm passwd
-	subrouter.HandleFunc("/confirm-passwd/{userid}/{passwd}", func(w http.ResponseWriter, r *http.Request) {
+	// 验证密码并获取用户信息
+	subrouter.HandleFunc("/confirm-passwd", func(w http.ResponseWriter, r *http.Request) {
 
-		userid := mux.Vars(r)["userid"]
-		passwd := md5passwd.Get(mux.Vars(r)["passwd"])
-		var stat, info string
+		stat := "false"
+		info := "error input"
+		template := []map[string]string{}
+		template = append(template, map[string]string{
+			"user_id":     "",
+			"user_passwd": "",
+		})
 
-		log.Println("user:", userid, "confirm passwd")
+		body := httpjsondone.GetBody(r)
+		if (body["user_id"] == "") || (body["user_passwd"] == "") {
+			res := httpjsondone.GenRes(nil, stat, info, template)
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(res)
+			return
+		}
+
+		userid := body["user_id"]
+		passwd := md5passwd.Get(body["user_passwd"])
+
+		log.Println("user:", userid, "confirm password")
 
 		data, _ := gosqljson.QueryDbToMap(db, "upper", "SELECT * FROM userlist where user_id=?", userid)
 
@@ -36,16 +51,16 @@ func UserSubrouter(r *mux.Router, db *sql.DB) {
 				info = ""
 				delete(data[0], "USER_PASSWORD")
 			} else {
-				data = data[:0]
 				stat = "false"
 				info = "wrong password"
+				data = data[:0]
 			}
 		} else {
 			stat = "false"
 			info = "no user"
 		}
 
-		res := stdres.Get(data, stat, info)
+		res := httpjsondone.GenRes(data, stat, info, template)
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(res)
 	})
