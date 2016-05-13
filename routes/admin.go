@@ -20,5 +20,6 @@ func AdminSubrouter(r *mux.Router, db *sql.DB) {
 	admin.UserSubrouter(subrouter, db)
 	admin.DeptSubrouter(subrouter, db)
 	admin.AppSubrouter(subrouter, db)
+	admin.MenuSubrouter(subrouter, db)
 
 }
