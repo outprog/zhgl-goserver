@@ -44,28 +44,27 @@ func UserSubrouter(r *mux.Router, db *sql.DB) {
 
 		log.Println("user:", userid, "confirm password")
 
-		data, _ := gosqljson.QueryDbToMap(db, "upper",
-			"SELECT t.user_id, "+
-				"   t.user_name, "+
-				"   t.user_password, "+
-				"   t.user_status, "+
-				"   (SELECT dept_id FROM mis.rel_user_dep where user_id = t.user_id) as dept_id "+
-				" FROM userlist t where t.user_id=?",
-			userid)
+		sql := "SELECT t.user_id, " +
+			"   t.user_name, " +
+			"   t.user_password, " +
+			"   t.user_status, " +
+			"   (SELECT dept_id FROM mis.rel_user_dep where user_id = t.user_id) as dept_id " +
+			" FROM userlist t where t.user_id=?"
+		data, _ := gosqljson.QueryDbToMap(db, "upper", sql, userid)
 
 		if len(data) == 1 {
 			if passwd == data[0]["USER_PASSWORD"] {
 				stat = "true"
-				info = ""
+				info = "密码正确,返回信息"
 				delete(data[0], "USER_PASSWORD")
 			} else {
 				stat = "false"
-				info = "wrong password"
+				info = "密码错误"
 				data = data[:0]
 			}
 		} else {
 			stat = "false"
-			info = "no user"
+			info = "没有该用户"
 		}
 
 		res := httpjsondone.GenRes(data, stat, info, template)
