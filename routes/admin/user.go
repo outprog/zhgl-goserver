@@ -23,19 +23,20 @@ func UserSubrouter(r *mux.Router, db *sql.DB) {
 	// 验证密码并获取用户信息
 	subrouter.HandleFunc("/confirm-passwd", func(w http.ResponseWriter, r *http.Request) {
 
-		stat := "false"
-		info := "error input"
-		template := []map[string]string{}
-		template = append(template, map[string]string{
+    res := map[string]string{
+      "stat": "false",
+      "info": "错误的输入格式",
+    }
+		template := map[string]string{
 			"user_id":     "",
 			"user_passwd": "",
-		})
+		}
 
 		body := httpjsondone.GetBody(r)
 		if (body["user_id"] == "") || (body["user_passwd"] == "") {
-			res := httpjsondone.GenRes(nil, stat, info, template)
+			genres := httpjsondone.GenRes(nil, res, template)
 			w.Header().Set("Content-Type", "application/json")
-			w.Write(res)
+			w.Write(genres)
 			return
 		}
 
@@ -54,22 +55,22 @@ func UserSubrouter(r *mux.Router, db *sql.DB) {
 
 		if len(data) == 1 {
 			if passwd == data[0]["USER_PASSWORD"] {
-				stat = "true"
-				info = "密码正确,返回信息"
+				res["stat"] = "true"
+				res["info"] = "密码正确,返回信息"
 				delete(data[0], "USER_PASSWORD")
 			} else {
-				stat = "false"
-				info = "密码错误"
+				res["stat"] = "false"
+				res["info"] = "密码错误"
 				data = data[:0]
 			}
 		} else {
-			stat = "false"
-			info = "没有该用户"
+			res["stat"] = "false"
+			res["info"] = "没有该用户"
 		}
 
-		res := httpjsondone.GenRes(data, stat, info, template)
+		genres := httpjsondone.GenRes(data, res, template)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write(res)
+		w.Write(genres)
 	})
 
 }

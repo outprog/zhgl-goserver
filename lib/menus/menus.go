@@ -2,46 +2,48 @@ package menus
 
 import (
 	"database/sql"
-	"strings"
 
-	"github.com/bitly/go-simplejson"
+	"github.com/outprog/go-simplejson"
 	"github.com/elgs/gosqljson"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func GenSysMenu(db *sql.DB, userid string) []byte {
+func GenSysMenu(db *sql.DB, userid string) *simplejson.Json {
 	sys := GetSys(db, userid)
-	js := GenJsonArray(len(sys))
-	for i, v := range sys {
-		js.GetIndex(i).Set("name", v["SYS_NAME"])
+	jsArr, _:= simplejson.NewJson([]byte(`[]`))
+	for _, v := range sys {
+    js, _ := simplejson.NewJson([]byte(`{}`))
+		js.Set("name", v["SYS_NAME"])
 		if v["SYS_URL"] == "" {
-			js.GetIndex(i).Set("href", "#")
-			js.GetIndex(i).Set("sub",
-				GenMenu(db, userid, v["SYS_ID"], "___"))
+			js.Set("href", "#")
+			js.Set("sub",
+				GenMenu(db, userid, v["SYS_ID"], "___").Interface())
 		} else {
-			js.GetIndex(i).Set("href", "#")
+			js.Set("href", "#")
 		}
+    jsArr = simplejson.Append(jsArr, js.Interface())
 	}
-	bt, _ := js.MarshalJSON()
-	return bt
+	return jsArr
 }
 
 func GenMenu(db *sql.DB, userid string, sysid string, menuseq string) *simplejson.Json {
 	menu := GetMenu(db, userid, sysid, menuseq)
-	js := GenJsonArray(len(menu))
-	for i, v := range menu {
-		js.GetIndex(i).Set("name", v["MENU_NAME"])
-		js.GetIndex(i).Set("seq", v["MENU_SEQ"])
-		js.GetIndex(i).Set("pla", v["MENU_PLA"])
+	jsArr, _:= simplejson.NewJson([]byte(`[]`))
+	for _, v := range menu {
+    js, _ := simplejson.NewJson([]byte(`{}`))
+		js.Set("name", v["MENU_NAME"])
+		js.Set("seq", v["MENU_SEQ"])
+		js.Set("pla", v["MENU_PLA"])
 		if v["MENU_URL"] == "" {
-			js.GetIndex(i).Set("href", "#")
-			js.GetIndex(i).Set("sub",
-				GenMenu(db, userid, sysid, v["MENU_SEQ"]+"___"))
+			js.Set("href", "#")
+			js.Set("sub",
+				GenMenu(db, userid, sysid, v["MENU_SEQ"]+"___").Interface())
 		} else {
-			js.GetIndex(i).Set("href", v["MENU_URL"])
+			js.Set("href", v["MENU_URL"])
 		}
+    jsArr = simplejson.Append(jsArr, js.Interface())
 	}
-	return js
+	return jsArr
 }
 
 func GetSys(db *sql.DB, userid string) []map[string]string {
@@ -65,14 +67,4 @@ func GetMenu(db *sql.DB, userid string, sysid string, menuseq string) []map[stri
 		"   order by t.menu_seq"
 	data, _ := gosqljson.QueryDbToMap(db, "upper", sql, userid, sysid, menuseq)
 	return data
-}
-
-func GenJsonArray(len int) *simplejson.Json {
-	arr := []string{}
-	for i := 0; i < len; i++ {
-		arr = append(arr, "{}")
-	}
-	str := "[" + strings.Join(arr, ",") + "]"
-	js, _ := simplejson.NewJson([]byte(str))
-	return js
 }
