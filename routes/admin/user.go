@@ -50,8 +50,8 @@ func UserSubrouter(r *mux.Router, db *sql.DB) {
 			"   t.user_password, " +
 			"   t.user_status, " +
 			"   (SELECT dept_id FROM mis.rel_user_dep where user_id = t.user_id) as dept_id " +
-			" FROM userlist t where t.user_id=?"
-		data, _ := gosqljson.QueryDbToMap(db, "upper", sql, userid)
+			" FROM userlist t where t.user_id='" + userid + "'"
+		data, _ := gosqljson.QueryDbToMap(db, "upper", sql)
 
 		if len(data) == 1 {
 			if passwd == data[0]["USER_PASSWORD"] {
@@ -104,8 +104,8 @@ func UserSubrouter(r *mux.Router, db *sql.DB) {
 
 		log.Println("add user:", userid)
 
-		stmt, _ := db.Prepare("insert into userlist (user_id, user_name, user_status, user_password, tellerno) values (?, ?, ?, ?, ?)")
-		_, err := stmt.Exec(userid, username, userstatus, userpasswd, tellerno)
+		stmt, _ := db.Prepare("insert into userlist (user_id, user_name, user_status, user_password, tellerno) values ('" + userid + "', '" + username + "', '" + userstatus + "', '" + userpasswd + "', '" + tellerno + "')")
+		_, err := stmt.Exec()
 		stmt.Close()
 
 		if err != nil {

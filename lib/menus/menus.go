@@ -3,16 +3,16 @@ package menus
 import (
 	"database/sql"
 
-	"github.com/outprog/go-simplejson"
 	"github.com/elgs/gosqljson"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/outprog/go-simplejson"
 )
 
 func GenSysMenu(db *sql.DB, userid string) *simplejson.Json {
 	sys := GetSys(db, userid)
-	jsArr, _:= simplejson.NewJson([]byte(`[]`))
+	jsArr, _ := simplejson.NewJson([]byte(`[]`))
 	for _, v := range sys {
-    js, _ := simplejson.NewJson([]byte(`{}`))
+		js, _ := simplejson.NewJson([]byte(`{}`))
 		js.Set("name", v["SYS_NAME"])
 		if v["SYS_URL"] == "" {
 			js.Set("href", "#")
@@ -21,16 +21,16 @@ func GenSysMenu(db *sql.DB, userid string) *simplejson.Json {
 		} else {
 			js.Set("href", "#")
 		}
-    jsArr = simplejson.Append(jsArr, js.Interface())
+		jsArr = simplejson.Append(jsArr, js.Interface())
 	}
 	return jsArr
 }
 
 func GenMenu(db *sql.DB, userid string, sysid string, menuseq string) *simplejson.Json {
 	menu := GetMenu(db, userid, sysid, menuseq)
-	jsArr, _:= simplejson.NewJson([]byte(`[]`))
+	jsArr, _ := simplejson.NewJson([]byte(`[]`))
 	for _, v := range menu {
-    js, _ := simplejson.NewJson([]byte(`{}`))
+		js, _ := simplejson.NewJson([]byte(`{}`))
 		js.Set("name", v["MENU_NAME"])
 		js.Set("seq", v["MENU_SEQ"])
 		js.Set("pla", v["MENU_PLA"])
@@ -41,7 +41,7 @@ func GenMenu(db *sql.DB, userid string, sysid string, menuseq string) *simplejso
 		} else {
 			js.Set("href", v["MENU_URL"])
 		}
-    jsArr = simplejson.Append(jsArr, js.Interface())
+		jsArr = simplejson.Append(jsArr, js.Interface())
 	}
 	return jsArr
 }
@@ -49,9 +49,9 @@ func GenMenu(db *sql.DB, userid string, sysid string, menuseq string) *simplejso
 func GetSys(db *sql.DB, userid string) []map[string]string {
 	sql := "select * from mis.syslist t" +
 		"   where t.sys_id in (select sys_id from mis.rel_sys_role_menu " +
-		"       where role_id in (select role_id from mis.rel_user_role where user_id = ?)) " +
+		"       where role_id in (select role_id from mis.rel_user_role where user_id = '" + userid + "')) " +
 		"   order by sys_id"
-	data, _ := gosqljson.QueryDbToMap(db, "upper", sql, userid)
+	data, _ := gosqljson.QueryDbToMap(db, "upper", sql)
 	return data
 }
 
@@ -61,10 +61,10 @@ func GetMenu(db *sql.DB, userid string, sysid string, menuseq string) []map[stri
 		"       (select menu_id from mis.rel_sys_role_menu  " +
 		"       where role_id in  " +
 		"           (select role_id from mis.rel_user_role  " +
-		"           where user_id = ?))  " +
-		"   and t.sys_id = ?  " +
-		"   and menu_seq like ? " +
+		"           where user_id = '" + userid + "'))  " +
+		"   and t.sys_id = '" + sysid + "'  " +
+		"   and menu_seq like '" + menuseq + "' " +
 		"   order by t.menu_seq"
-	data, _ := gosqljson.QueryDbToMap(db, "upper", sql, userid, sysid, menuseq)
+	data, _ := gosqljson.QueryDbToMap(db, "upper", sql)
 	return data
 }
