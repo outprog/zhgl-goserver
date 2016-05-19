@@ -34,9 +34,7 @@ func UserSubrouter(r *mux.Router, db *sql.DB) {
 
 		body := httpjsondone.GetBody(r)
 		if (body["user_id"] == "") || (body["user_passwd"] == "") {
-			genres := httpjsondone.GenRes(nil, res, template)
-			w.Header().Set("Content-Type", "application/json")
-			w.Write(genres)
+			httpjsondone.SendRes(w, nil, res, template)
 			return
 		}
 
@@ -68,9 +66,7 @@ func UserSubrouter(r *mux.Router, db *sql.DB) {
 			res["info"] = "没有该用户"
 		}
 
-		genres := httpjsondone.GenRes(data, res, template)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(genres)
+		httpjsondone.SendRes(w, data, res, template)
 	})
 
 	// 新增用户
@@ -90,9 +86,7 @@ func UserSubrouter(r *mux.Router, db *sql.DB) {
 
 		body := httpjsondone.GetBody(r)
 		if (body["user_id"] == "") || (body["user_name"] == "") || (body["user_passwd"] == "") || (body["user_status"] == "") {
-			genres := httpjsondone.GenRes(nil, res, template)
-			w.Header().Set("Content-Type", "application/json")
-			w.Write(genres)
+			httpjsondone.SendRes(w, nil, res, template)
 			return
 		}
 
@@ -111,17 +105,13 @@ func UserSubrouter(r *mux.Router, db *sql.DB) {
 		if err != nil {
 			res["stat"] = "false"
 			res["info"] = err.Error()
-			genres := httpjsondone.GenRes(nil, res, template)
-			w.Header().Set("Content-Type", "application/json")
-			w.Write(genres)
+			httpjsondone.SendRes(w, nil, res, template)
 			return
 		}
 
 		res["stat"] = "true"
 		res["info"] = "用户添加成功"
-		genres := httpjsondone.GenRes(nil, res, template)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(genres)
+		httpjsondone.SendRes(w, nil, res, template)
 	})
 
 	// 删除用户
@@ -137,9 +127,7 @@ func UserSubrouter(r *mux.Router, db *sql.DB) {
 
 		body := httpjsondone.GetBody(r)
 		if body["user_id"] == "" {
-			genres := httpjsondone.GenRes(nil, res, template)
-			w.Header().Set("Content-Type", "application/json")
-			w.Write(genres)
+			httpjsondone.SendRes(w, nil, res, template)
 			return
 		}
 
@@ -160,18 +148,53 @@ func UserSubrouter(r *mux.Router, db *sql.DB) {
 
 			tx.Rollback()
 			res["info"] = "执行失败"
-			genres := httpjsondone.GenRes(nil, res, template)
-			w.Header().Set("Content-Type", "application/json")
-			w.Write(genres)
+			httpjsondone.SendRes(w, nil, res, template)
 			return
 		}
 		tx.Commit()
 
 		res["stat"] = "true"
 		res["info"] = "删除成功"
-		genres := httpjsondone.GenRes(nil, res, template)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(genres)
+		httpjsondone.SendRes(w, nil, res, template)
+	})
+
+	// 设置用户部门
+	subrouter.HandleFunc("/setting-dept", func(w http.ResponseWriter, r *http.Request) {
+		res := map[string]string{
+			"stat": "false",
+			"info": "错误的输入格式",
+		}
+		template := map[string]string{
+			"user_id":   "",
+			"user_dept": "",
+		}
+
+		body := httpjsondone.GetBody(r)
+		if (body["user_id"] == "") || (body["user_dept"] == "") {
+			httpjsondone.SendRes(w, nil, res, template)
+			return
+		}
+
+		userid := body["user_id"]
+		userdept := body["user_dept"]
+
+		tx, _ := db.Begin()
+		_, errDelRel := tx.Exec("delete from rel_user_dep where user_id = '" + userid + "'")
+		_, errInsertRel := tx.Exec("insert into rel_user_dep values('" + userid + "', '" + userdept + "')")
+
+		if (errDelRel != nil) ||
+			(errInsertRel != nil) {
+
+			tx.Rollback()
+			res["info"] = "执行失败"
+			httpjsondone.SendRes(w, nil, res, template)
+			return
+		}
+		tx.Commit()
+
+		res["stat"] = "true"
+		res["info"] = "设置成功"
+		httpjsondone.SendRes(w, nil, res, template)
 	})
 
 }

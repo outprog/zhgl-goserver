@@ -7,26 +7,32 @@ import (
 	"github.com/outprog/go-simplejson"
 )
 
+func SendRes(w http.ResponseWriter, data interface{}, res interface{}, template interface{}) {
+	genres := GenRes(data, res, template)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(genres)
+}
+
 func GenRes(data interface{}, res interface{}, template interface{}) []byte {
 
-  genres, _:= simplejson.NewJson([]byte(`{}`))
+	genres, _ := simplejson.NewJson([]byte(`{}`))
 
 	if data == nil {
 		data = []map[string]string{}
 	}
-  genres.Set("data", data)
+	genres.Set("data", data)
 
-  if res == nil {
-    res = map[string]string{}
-  }
-  genres.Set("res", res)
+	if res == nil {
+		res = map[string]string{}
+	}
+	genres.Set("res", res)
 
 	if template == nil {
 		template = map[string]string{}
 	}
-  genres.Set("template", template)
+	genres.Set("template", template)
 
-  by, _ := genres.Encode()
+	by, _ := genres.Encode()
 	return by
 }
 

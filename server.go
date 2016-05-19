@@ -36,7 +36,7 @@ func main() {
 	db, err := sql.Open("oci8", getDSN())
 	//db, err := sql.Open("mysql", "root@/mis")
 	if err != nil {
-		log.Println("database error")
+		log.Println(err.Error())
 	}
 	defer db.Close()
 
@@ -73,5 +73,5 @@ func getDSN() string {
 	fmt.Fprintln(os.Stderr, `Please specifiy connection parameter in GO_OCI8_CONNECT_STRING environment variable,
 or as the first argument! (The format is user/name@host:port/sid)`)
 	//return "scott/tiger@XE"
-	return "scott/tiger@XE"
+	return "mis/mis@/tiger@XE"
 }

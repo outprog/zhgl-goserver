@@ -7,8 +7,8 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"zhgl-goserver/lib/menus"
 	"zhgl-goserver/lib/httpjsondone"
+	"zhgl-goserver/lib/menus"
 )
 
 func MenuSubrouter(r *mux.Router, db *sql.DB) {
@@ -24,13 +24,11 @@ func MenuSubrouter(r *mux.Router, db *sql.DB) {
 
 		userid := mux.Vars(r)["userid"]
 
-    data := menus.GenSysMenu(db, userid)
+		data := menus.GenSysMenu(db, userid)
 
 		log.Println("user:", userid, "get menus")
 
-		genres := httpjsondone.GenRes(data, nil, nil)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(genres)
+		httpjsondone.SendRes(w, data, nil, nil)
 	})
 
 }
