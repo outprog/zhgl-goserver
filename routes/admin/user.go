@@ -1,200 +1,30 @@
 package admin
 
 import (
-	"database/sql"
-	"log"
 	"net/http"
 
-	"github.com/elgs/gosqljson"
-	"github.com/gorilla/mux"
-
-	"zhgl-goserver/lib/httpjsondone"
-	"zhgl-goserver/lib/md5passwd"
+	"zhgl-goserver/routes/admin/user"
 )
 
-func UserSubrouter(r *mux.Router, db *sql.DB) {
+func UserSubrouter(path string) {
 
-	subrouter := r.PathPrefix("/user").Subrouter()
+	subrouter := prouter.PathPrefix(path).Subrouter()
 
 	subrouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("user\n"))
 	})
 
-	// 验证密码并获取用户信息
-	subrouter.HandleFunc("/confirm-passwd", func(w http.ResponseWriter, r *http.Request) {
-
-		res := map[string]string{
-			"stat": "false",
-			"info": "错误的输入格式",
-		}
-		template := map[string]string{
-			"user_id":     "",
-			"user_passwd": "",
-		}
-
-		body := httpjsondone.GetBody(r)
-		if (body["user_id"] == "") || (body["user_passwd"] == "") {
-			httpjsondone.SendRes(w, nil, res, template)
-			return
-		}
-
-		userid := body["user_id"]
-		passwd := md5passwd.Get(body["user_passwd"])
-
-		log.Println("user:", userid, "confirm password")
-
-		sql := "SELECT t.user_id, " +
-			"   t.user_name, " +
-			"   t.user_password, " +
-			"   t.user_status, " +
-			"   (SELECT dept_id FROM mis.rel_user_dep where user_id = t.user_id) as dept_id " +
-			" FROM userlist t where t.user_id='" + userid + "'"
-		data, _ := gosqljson.QueryDbToMap(db, "upper", sql)
-
-		if len(data) == 1 {
-			if passwd == data[0]["USER_PASSWORD"] {
-				res["stat"] = "true"
-				res["info"] = "密码正确,返回信息"
-				delete(data[0], "USER_PASSWORD")
-			} else {
-				res["stat"] = "false"
-				res["info"] = "密码错误"
-				data = data[:0]
-			}
-		} else {
-			res["stat"] = "false"
-			res["info"] = "没有该用户"
-		}
-
-		httpjsondone.SendRes(w, data, res, template)
-	})
-
+	user.Init(db)
 	// 新增用户
-	subrouter.HandleFunc("/add", func(w http.ResponseWriter, r *http.Request) {
-
-		res := map[string]string{
-			"stat": "false",
-			"info": "错误的输入格式",
-		}
-		template := map[string]string{
-			"user_id":     "",
-			"user_name":   "",
-			"user_status": "",
-			"user_passwd": "",
-			"tellerno":    "",
-		}
-
-		body := httpjsondone.GetBody(r)
-		if (body["user_id"] == "") || (body["user_name"] == "") || (body["user_passwd"] == "") || (body["user_status"] == "") {
-			httpjsondone.SendRes(w, nil, res, template)
-			return
-		}
-
-		userid := body["user_id"]
-		username := body["user_name"]
-		userstatus := body["user_status"]
-		userpasswd := md5passwd.Get(body["user_passwd"])
-		tellerno := body["tellerno"]
-
-		log.Println("add user:", userid)
-
-		stmt, _ := db.Prepare("insert into userlist (user_id, user_name, user_status, user_password, tellerno) values ('" + userid + "', '" + username + "', '" + userstatus + "', '" + userpasswd + "', '" + tellerno + "')")
-		_, err := stmt.Exec()
-		stmt.Close()
-
-		if err != nil {
-			res["stat"] = "false"
-			res["info"] = err.Error()
-			httpjsondone.SendRes(w, nil, res, template)
-			return
-		}
-
-		res["stat"] = "true"
-		res["info"] = "用户添加成功"
-		httpjsondone.SendRes(w, nil, res, template)
-	})
-
+	subrouter.HandleFunc("/add", user.Add)
 	// 删除用户
-	subrouter.HandleFunc("/del", func(w http.ResponseWriter, r *http.Request) {
-
-		res := map[string]string{
-			"stat": "false",
-			"info": "错误的输入格式",
-		}
-		template := map[string]string{
-			"user_id": "",
-		}
-
-		body := httpjsondone.GetBody(r)
-		if body["user_id"] == "" {
-			httpjsondone.SendRes(w, nil, res, template)
-			return
-		}
-
-		userid := body["user_id"]
-
-		tx, _ := db.Begin()
-		_, errUserList := tx.Exec("delete from userlist where user_id = '" + userid + "'")
-		_, errRelUserDep := tx.Exec("delete from rel_user_dep where user_id = '" + userid + "'")
-		_, errRelUserSysDept := tx.Exec("delete from rel_user_sys_dept where user_id = '" + userid + "'")
-		_, errSysManager := tx.Exec("delete from sys_manager where user_id = '" + userid + "'")
-		_, errRelUserRole := tx.Exec("delete from rel_user_role where user_id = '" + userid + "'")
-
-		if (errUserList != nil) ||
-			(errRelUserDep != nil) ||
-			(errRelUserSysDept != nil) ||
-			(errSysManager != nil) ||
-			(errRelUserRole != nil) {
-
-			tx.Rollback()
-			res["info"] = "执行失败"
-			httpjsondone.SendRes(w, nil, res, template)
-			return
-		}
-		tx.Commit()
-
-		res["stat"] = "true"
-		res["info"] = "删除成功"
-		httpjsondone.SendRes(w, nil, res, template)
+	subrouter.HandleFunc("/del", user.Del)
+	// 查询用户
+	subrouter.HandleFunc("/query", func(w http.ResponseWriter, r *http.Request) {
 	})
-
 	// 设置用户部门
-	subrouter.HandleFunc("/setting-dept", func(w http.ResponseWriter, r *http.Request) {
-		res := map[string]string{
-			"stat": "false",
-			"info": "错误的输入格式",
-		}
-		template := map[string]string{
-			"user_id":   "",
-			"user_dept": "",
-		}
-
-		body := httpjsondone.GetBody(r)
-		if (body["user_id"] == "") || (body["user_dept"] == "") {
-			httpjsondone.SendRes(w, nil, res, template)
-			return
-		}
-
-		userid := body["user_id"]
-		userdept := body["user_dept"]
-
-		tx, _ := db.Begin()
-		_, errDelRel := tx.Exec("delete from rel_user_dep where user_id = '" + userid + "'")
-		_, errInsertRel := tx.Exec("insert into rel_user_dep values('" + userid + "', '" + userdept + "')")
-
-		if (errDelRel != nil) ||
-			(errInsertRel != nil) {
-
-			tx.Rollback()
-			res["info"] = "执行失败"
-			httpjsondone.SendRes(w, nil, res, template)
-			return
-		}
-		tx.Commit()
-
-		res["stat"] = "true"
-		res["info"] = "设置成功"
-		httpjsondone.SendRes(w, nil, res, template)
-	})
+	subrouter.HandleFunc("/setting-dept", user.SettingDept)
+	// 验证密码并获取用户信息
+	subrouter.HandleFunc("/confirm-passwd", user.ConfirmPasswd)
 
 }

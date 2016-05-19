@@ -1,7 +1,6 @@
 package admin
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 
@@ -11,9 +10,9 @@ import (
 	"zhgl-goserver/lib/menus"
 )
 
-func MenuSubrouter(r *mux.Router, db *sql.DB) {
+func MenuSubrouter(path string) {
 
-	subrouter := r.PathPrefix("/menu").Subrouter()
+	subrouter := prouter.PathPrefix(path).Subrouter()
 
 	subrouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("app\n"))

@@ -1,14 +1,12 @@
 package admin
 
 import (
-	"database/sql"
-	"github.com/gorilla/mux"
 	"net/http"
 )
 
-func DeptSubrouter(r *mux.Router, db *sql.DB) {
+func DeptSubrouter(path string) {
 
-	subrouter := r.PathPrefix("/dept").Subrouter()
+	subrouter := prouter.PathPrefix(path).Subrouter()
 
 	subrouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("dept\n"))
