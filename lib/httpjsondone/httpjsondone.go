@@ -9,7 +9,7 @@ import (
 
 func SendRes(w http.ResponseWriter, data interface{}, res interface{}, template interface{}) {
 	genres := GenRes(data, res, template)
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	w.Write(genres)
 }
 
