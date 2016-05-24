@@ -1,4 +1,4 @@
-package user
+package dept
 
 import (
 	"log"
@@ -7,7 +7,7 @@ import (
 	"zhgl-goserver/lib/httpjsondone"
 )
 
-// 更新用户信息
+// 更新部门信息
 func Update(w http.ResponseWriter, r *http.Request) {
 
 	res := map[string]string{
@@ -15,36 +15,30 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		"info": "错误的输入格式",
 	}
 	template := map[string]string{
-		"user_id":     "",
-		"user_name":   "",
-		"tellerno":    "",
-		"user_email":  "",
-		"user_mobile": "",
-		"user_status": "",
+		"dept_id":    "",
+		"dept_name":  "",
+		"mdept_id":   "",
+		"dept_class": "",
 	}
 
 	body := httpjsondone.GetBody(r)
-	if body["user_id"] == "" {
+	if (body["dept_id"] == "") || (body["dept_name"] == "") || (body["mdept_id"] == "") || (body["dept_class"] == "") {
 		httpjsondone.SendRes(w, nil, res, template)
 		return
 	}
 
-	userid := body["user_id"]
-	username := body["user_name"]
-	tellerno := body["tellerno"]
-	useremail := body["user_email"]
-	usermobile := body["user_mobile"]
-	userstatus := body["user_status"]
+	deptid := body["dept_id"]
+	deptname := body["dept_name"]
+	mdeptid := body["mdept_id"]
+	deptclass := body["dept_class"]
 
-	log.Println("update user:", userid)
+	log.Println("update dept:", deptid)
 
-	sql := "update mis.userlist t  " +
-		"	set t.USER_NAME = '" + username + "', " +
-		"		t.TELLERNO = '" + tellerno + "', " +
-		"		t.USER_EMAIL = '" + useremail + "', " +
-		"		t.USER_MOBILE = '" + usermobile + "', " +
-		"		t.USER_STATUS = '" + userstatus + "' " +
-		"	where t.USER_ID = '" + userid + "'"
+	sql := "update mis.department t  " +
+		"	set t.DEPT_NAME = '" + deptname + "', " +
+		"		t.MDEPT_ID = '" + mdeptid + "', " +
+		"		t.DEPT_CLASS = '" + deptclass + "' " +
+		"	where t.DEPT_ID = '" + deptid + "'"
 	stmt, _ := db.Prepare(sql)
 	defer stmt.Close()
 	upres, _ := stmt.Exec()
@@ -56,6 +50,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		httpjsondone.SendRes(w, nil, res, template)
 		return
 	}
+
 	if rowCnt == 1 {
 		res["stat"] = "true"
 		res["info"] = "更新成功"

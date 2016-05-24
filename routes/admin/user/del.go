@@ -1,6 +1,7 @@
 package user
 
 import (
+	"log"
 	"net/http"
 
 	"zhgl-goserver/lib/httpjsondone"
@@ -24,6 +25,7 @@ func Del(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userid := body["user_id"]
+	log.Println("delete user:", userid)
 
 	tx, _ := db.Begin()
 	_, errUserList := tx.Exec("delete from userlist where user_id = '" + userid + "'")
