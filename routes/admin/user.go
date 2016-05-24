@@ -19,6 +19,8 @@ func UserSubrouter(path string) {
 	subrouter.HandleFunc("/add", user.Add)
 	// 删除用户
 	subrouter.HandleFunc("/del", user.Del)
+	// 修改用户
+	subrouter.HandleFunc("/update", user.Update)
 	// 查询用户
 	subrouter.HandleFunc("/query", user.Query)
 	// 设置用户部门
