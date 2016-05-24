@@ -21,4 +21,6 @@ func DeptSubrouter(path string) {
 	subrouter.HandleFunc("/del", dept.Del)
 	// 更新部门
 	subrouter.HandleFunc("/update", dept.Update)
+	// 查询部门
+	subrouter.HandleFunc("/query", dept.Query)
 }
