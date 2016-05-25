@@ -17,6 +17,7 @@ func Query(w http.ResponseWriter, r *http.Request) {
 	}
 	template := map[string]string{
 		"user_id":     "",
+		"user_name":   "",
 		"user_status": "",
 		"dept_id":     "",
 		"role_id":     "",
@@ -25,6 +26,7 @@ func Query(w http.ResponseWriter, r *http.Request) {
 
 	body := httpjsondone.GetBody(r)
 	userid := body["user_id"]
+	username := body["user_name"]
 	userstatus := body["user_status"]
 	deptid := body["dept_id"]
 	roleid := body["role_id"]
@@ -39,6 +41,7 @@ func Query(w http.ResponseWriter, r *http.Request) {
 		"   ON t.user_id = t2.user_id LEFT JOIN mis.department t3 " +
 		"   ON t2.dept_id = t3.dept_id " +
 		"    WHERE t.user_id LIKE '%" + userid + "%' " +
+		"    AND t.user_name LIKE '%" + username + "%' " +
 		"    AND t.user_status LIKE '%" + userstatus + "%' "
 	if deptid != "" {
 		sql = sql +
