@@ -4,7 +4,6 @@ import (
 	"database/sql"
 
 	"github.com/elgs/gosqljson"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/outprog/go-simplejson"
 )
 
