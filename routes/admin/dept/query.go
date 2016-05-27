@@ -30,7 +30,7 @@ func Query(w http.ResponseWriter, r *http.Request) {
 	mdeptname := body["mdept_name"]
 	deptclass := body["dept_class"]
 
-	log.Println("query user")
+	log.Println("query department")
 
 	sql := "select t.DEPT_ID, t.DEPT_NAME, t.MDEPT_ID, t1.DEPT_NAME as MDEPT_NAME, t.DEPT_CLASS  " +
 		"	from mis.department t left join mis.department t1 on t.MDEPT_ID = t1.DEPT_ID " +
