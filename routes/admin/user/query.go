@@ -45,15 +45,15 @@ func Query(w http.ResponseWriter, r *http.Request) {
 		"    AND t.user_status LIKE '%" + userstatus + "%' "
 	if deptid != "" {
 		sql = sql +
-			"    AND t2.dept_id LIKE '%" + deptid + "%' "
+			"    AND t2.dept_id = '" + deptid + "' "
 	}
 	if roleid != "" {
 		sql = sql +
-			"    AND t.user_id IN (SELECT user_id FROM mis.rel_user_role WHERE role_id LIKE '%" + roleid + "%') "
+			"    AND t.user_id IN (SELECT user_id FROM mis.rel_user_role WHERE role_id = '" + roleid + "') "
 	}
 	if sysid != "" {
 		sql = sql +
-			"    AND t.user_id IN (SELECT user_id FROM mis.sys_manager WHERE sys_id LIKE '%" + sysid + "%') "
+			"    AND t.user_id IN (SELECT user_id FROM mis.sys_manager WHERE sys_id = '" + sysid + "') "
 	}
 	data, _ := gosqljson.QueryDbToMap(db, "upper", sql)
 
