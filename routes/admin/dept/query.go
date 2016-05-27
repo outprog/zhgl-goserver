@@ -32,7 +32,7 @@ func Query(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("query user")
 
-	sql := "select t.DEPT_ID, t.DEPT_NAME, t.MDEPT_ID, t1.DEPT_NAME as MDETP_NAME, t.DEPT_CLASS  " +
+	sql := "select t.DEPT_ID, t.DEPT_NAME, t.MDEPT_ID, t1.DEPT_NAME as MDEPT_NAME, t.DEPT_CLASS  " +
 		"	from mis.department t left join mis.department t1 on t.MDEPT_ID = t1.DEPT_ID " +
 		"	where t.DEPT_ID like '%" + deptid + "%' " +
 		"	and t.DEPT_NAME like '%" + deptname + "%' " +
