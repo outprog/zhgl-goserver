@@ -20,5 +20,6 @@ func AdminSubrouter(path string) {
 	admin.DeptSubrouter("/dept")
 	admin.AppSubrouter("/app")
 	admin.MenuSubrouter("/menu")
+	admin.RoleSubrouter("/role")
 
 }
