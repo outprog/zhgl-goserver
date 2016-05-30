@@ -40,16 +40,17 @@ func Query(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("query role")
 
+	log.Println(roleid)
 	sql := "select * from mis.rolelist t " +
-		"	where ('" + roleid + "' = '' or t.ROLE_ID = '" + roleid + "') " +
-		"	and ('" + rolename + "' = '' or t.ROLE_NAME like '%" + rolename + "%') " +
-		"	and ('" + userid + "' = '' or t.ROLE_ID in (select role_id from mis.rel_user_role where user_id like '%" + userid + "%')) " +
-		"	and ('" + username + "' = '' or t.ROLE_ID in (select role_id from mis.rel_user_role where user_id in (select user_id from mis.userlist where user_name like '%" + username + "%'))) " +
-		"	and ('" + operatorid + "' = '' or t.ROLE_ID in (select role_id from mis.rel_sys_role_menu where sys_id in (select sys_id from mis.sys_manager where user_id like '%" + operatorid + "%'))) " +
-		"	and ('" + sysid + "' = '' or t.ROLE_ID in (select role_id from mis.rel_sys_role_menu where sys_id like '%" + sysid + "%')) " +
-		"	and ('" + sysname + "' = '' or t.ROLE_ID in (select role_id from mis.rel_sys_role_menu where sys_id in (select sys_id from mis.syslist where sys_name like '%" + sysname + "%'))) " +
-		"	and ('" + menuid + "' = '' or t.ROLE_ID in (select role_id from mis.rel_sys_role_menu where menu_id like '%" + menuid + "%')) " +
-		"	and ('" + menuname + "' = '' or t.ROLE_ID in (select role_id from mis.rel_sys_role_menu where menu_id in (select menu_id from mis.menulist where menu_name like '%" + menuname + "%')))"
+		"	where ('" + roleid + "' is null or '" + roleid + "' = '' or t.ROLE_ID = '" + roleid + "') " +
+		"	and ('" + rolename + "' is null or '" + rolename + "' = '' or t.ROLE_NAME like '%" + rolename + "%') " +
+		"	and ('" + userid + "' is null or '" + userid + "' = '' or t.ROLE_ID in (select role_id from mis.rel_user_role where user_id like '%" + userid + "%')) " +
+		"	and ('" + username + "' is null or '" + username + "' = '' or t.ROLE_ID in (select role_id from mis.rel_user_role where user_id in (select user_id from mis.userlist where user_name like '%" + username + "%'))) " +
+		"	and ('" + operatorid + "' is null or '" + operatorid + "' = '' or t.ROLE_ID in (select role_id from mis.rel_sys_role_menu where sys_id in (select sys_id from mis.sys_manager where user_id like '%" + operatorid + "%'))) " +
+		"	and ('" + sysid + "' is null or '" + sysid + "' = '' or t.ROLE_ID in (select role_id from mis.rel_sys_role_menu where sys_id like '%" + sysid + "%')) " +
+		"	and ('" + sysname + "' is null or '" + sysname + "' = '' or t.ROLE_ID in (select role_id from mis.rel_sys_role_menu where sys_id in (select sys_id from mis.syslist where sys_name like '%" + sysname + "%'))) " +
+		"	and ('" + menuid + "' is null or '" + menuid + "' = '' or t.ROLE_ID in (select role_id from mis.rel_sys_role_menu where menu_id like '%" + menuid + "%')) " +
+		"	and ('" + menuname + "' is null or '" + menuname + "' = '' or t.ROLE_ID in (select role_id from mis.rel_sys_role_menu where menu_id in (select menu_id from mis.menulist where menu_name like '%" + menuname + "%')))"
 
 	data, _ := gosqljson.QueryDbToMap(db, "upper", sql)
 
