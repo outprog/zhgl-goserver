@@ -40,7 +40,6 @@ func Query(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("query role")
 
-	log.Println(roleid)
 	sql := "select * from mis.rolelist t " +
 		"	where ('" + roleid + "' is null or '" + roleid + "' = '' or t.ROLE_ID = '" + roleid + "') " +
 		"	and ('" + rolename + "' is null or '" + rolename + "' = '' or t.ROLE_NAME like '%" + rolename + "%') " +
