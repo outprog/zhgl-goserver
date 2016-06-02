@@ -8,6 +8,7 @@ import (
 
 	"zhgl-goserver/lib/httpjsondone"
 	"zhgl-goserver/lib/menus"
+	"zhgl-goserver/routes/admin/menu"
 )
 
 func MenuSubrouter(path string) {
@@ -29,5 +30,15 @@ func MenuSubrouter(path string) {
 
 		httpjsondone.SendRes(w, data, nil, nil)
 	})
+
+	menu.Init(db)
+	// 新增菜单
+	subrouter.HandleFunc("/add", menu.Add)
+	// 删除菜单
+	subrouter.HandleFunc("/del", menu.Del)
+	// 更新菜单
+	subrouter.HandleFunc("/update", menu.Update)
+	// 查询菜单
+	subrouter.HandleFunc("/query", menu.Query)
 
 }

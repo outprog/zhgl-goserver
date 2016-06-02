@@ -31,10 +31,10 @@ func Add(w http.ResponseWriter, r *http.Request) {
 	var id int
 	rows, _ := db.Query("select max(ROLE_ID) + 1 from mis.rolelist")
 	defer rows.Close()
-	for rows.Next() {
+	if rows.Next() {
 		err := rows.Scan(&id)
 		if err != nil {
-			res["info"] = err.Error()
+			id = 101
 		}
 	}
 
