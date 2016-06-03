@@ -23,5 +23,8 @@ func RoleSubrouter(path string) {
 	subrouter.HandleFunc("/update", role.Update)
 	// 删除权限
 	subrouter.HandleFunc("/del", role.Del)
+	// 权限菜单管理
+	subrouter.HandleFunc("/add-menu", role.AddMenu)
+	subrouter.HandleFunc("/del-menu", role.DelMenu)
 
 }

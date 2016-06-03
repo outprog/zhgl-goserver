@@ -34,5 +34,7 @@ func UserSubrouter(path string) {
 	subrouter.HandleFunc("/del-app", user.DelApp)
 	// 验证密码并获取用户信息
 	subrouter.HandleFunc("/confirm-passwd", user.ConfirmPasswd)
+	// 修改密码
+	subrouter.HandleFunc("/update-passwd", user.UpdatePasswd)
 
 }
