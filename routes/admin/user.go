@@ -26,6 +26,12 @@ func UserSubrouter(path string) {
 	subrouter.HandleFunc("/query/{userid}", user.QueryGet)
 	// 设置用户部门
 	subrouter.HandleFunc("/setting-dept", user.SettingDept)
+	// 管理用户权限
+	subrouter.HandleFunc("/add-role", user.AddRole)
+	subrouter.HandleFunc("/del-role", user.DelRole)
+	// 管理用户应用系统
+	subrouter.HandleFunc("/add-app", user.AddApp)
+	subrouter.HandleFunc("/del-app", user.DelApp)
 	// 验证密码并获取用户信息
 	subrouter.HandleFunc("/confirm-passwd", user.ConfirmPasswd)
 

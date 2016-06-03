@@ -1,6 +1,7 @@
 package user
 
 import (
+	"log"
 	"net/http"
 
 	"zhgl-goserver/lib/httpjsondone"
@@ -26,6 +27,8 @@ func SettingDept(w http.ResponseWriter, r *http.Request) {
 
 	userid := body["user_id"]
 	userdept := body["user_dept"]
+
+	log.Println("user", userid, "set dept", userdept)
 
 	tx, _ := db.Begin()
 	_, errDelRel := tx.Exec("delete from rel_user_dep where user_id = '" + userid + "'")
