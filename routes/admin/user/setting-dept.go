@@ -4,11 +4,14 @@ import (
 	"log"
 	"net/http"
 
+	"zhgl-goserver/lib/condb"
 	"zhgl-goserver/lib/httpjsondone"
 )
 
 // 设置用户部门
 func SettingDept(w http.ResponseWriter, r *http.Request) {
+	db := condb.Open()
+	defer db.Close()
 
 	res := map[string]string{
 		"stat": "false",

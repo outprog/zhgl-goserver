@@ -6,12 +6,15 @@ import (
 
 	"github.com/elgs/gosqljson"
 
+	"zhgl-goserver/lib/condb"
 	"zhgl-goserver/lib/httpjsondone"
 	"zhgl-goserver/lib/md5passwd"
 )
 
 // 验证密码
 func ConfirmPasswd(w http.ResponseWriter, r *http.Request) {
+	db := condb.Open()
+	defer db.Close()
 
 	res := map[string]string{
 		"stat": "false",

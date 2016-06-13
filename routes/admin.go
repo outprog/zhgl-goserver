@@ -14,7 +14,7 @@ func AdminSubrouter(path string) {
 		w.Write([]byte("admin\n"))
 	})
 
-	admin.Init(db, subrouter)
+	admin.Init(subrouter)
 	// subrouter list
 	admin.UserSubrouter("/user")
 	admin.DeptSubrouter("/dept")

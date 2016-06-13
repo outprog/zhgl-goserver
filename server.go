@@ -15,9 +15,6 @@ func main() {
 	log.SetOutput(os.Stdout)
 	log.SetFlags(log.Ldate | log.Ltime)
 
-	InitDB()
-	defer db.Close()
-
 	r := mux.NewRouter()
 	// Routes consist of a path and a handler function.
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -29,7 +26,7 @@ func main() {
 		w.Write([]byte("services\n"))
 	})
 
-	routes.Init(db, services)
+	routes.Init(services)
 	// services list
 	routes.AdminSubrouter("/admin")
 

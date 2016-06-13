@@ -14,7 +14,6 @@ func DeptSubrouter(path string) {
 		w.Write([]byte("dept\n"))
 	})
 
-	dept.Init(db)
 	// 新增部门
 	subrouter.HandleFunc("/add", dept.Add)
 	// 删除部门

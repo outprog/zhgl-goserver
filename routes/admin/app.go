@@ -14,7 +14,6 @@ func AppSubrouter(path string) {
 		w.Write([]byte("app\n"))
 	})
 
-	app.Init(db)
 	// 新增系统
 	subrouter.HandleFunc("/add", app.Add)
 	// 删除系统

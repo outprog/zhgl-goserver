@@ -7,11 +7,14 @@ import (
 	"github.com/elgs/gosqljson"
 	"github.com/gorilla/mux"
 
+	"zhgl-goserver/lib/condb"
 	"zhgl-goserver/lib/httpjsondone"
 )
 
 // 查询用户 GET 方法
 func QueryGet(w http.ResponseWriter, r *http.Request) {
+	db := condb.Open()
+	defer db.Close()
 
 	userid := mux.Vars(r)["userid"]
 

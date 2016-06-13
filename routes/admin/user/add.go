@@ -4,12 +4,15 @@ import (
 	"log"
 	"net/http"
 
+	"zhgl-goserver/lib/condb"
 	"zhgl-goserver/lib/httpjsondone"
 	"zhgl-goserver/lib/md5passwd"
 )
 
 // 添加用户
 func Add(w http.ResponseWriter, r *http.Request) {
+	db := condb.Open()
+	defer db.Close()
 
 	res := map[string]string{
 		"stat": "false",

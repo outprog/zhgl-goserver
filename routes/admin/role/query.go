@@ -6,11 +6,15 @@ import (
 
 	"github.com/elgs/gosqljson"
 
+	"zhgl-goserver/lib/condb"
 	"zhgl-goserver/lib/httpjsondone"
 )
 
 // 查询权限
 func Query(w http.ResponseWriter, r *http.Request) {
+	db := condb.Open()
+	defer db.Close()
+
 	res := map[string]string{
 		"stat": "false",
 		"info": "错误的输入格式",

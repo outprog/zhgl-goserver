@@ -4,11 +4,14 @@ import (
 	"log"
 	"net/http"
 
+	"zhgl-goserver/lib/condb"
 	"zhgl-goserver/lib/httpjsondone"
 )
 
 // 更新菜单
 func Update(w http.ResponseWriter, r *http.Request) {
+	db := condb.Open()
+	defer db.Close()
 
 	res := map[string]string{
 		"stat": "false",

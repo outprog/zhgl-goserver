@@ -5,11 +5,15 @@ import (
 	"net/http"
 	"strconv"
 
+	"zhgl-goserver/lib/condb"
 	"zhgl-goserver/lib/httpjsondone"
 )
 
 // 新增菜单
 func Add(w http.ResponseWriter, r *http.Request) {
+	db := condb.Open()
+	defer db.Close()
+
 	res := map[string]string{
 		"stat": "false",
 		"info": "错误的输入格式",

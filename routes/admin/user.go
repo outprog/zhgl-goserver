@@ -14,7 +14,6 @@ func UserSubrouter(path string) {
 		w.Write([]byte("user\n"))
 	})
 
-	user.Init(db)
 	// 新增用户
 	subrouter.HandleFunc("/add", user.Add)
 	// 删除用户

@@ -6,6 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"zhgl-goserver/lib/condb"
 	"zhgl-goserver/lib/httpjsondone"
 	"zhgl-goserver/lib/menus"
 	"zhgl-goserver/routes/admin/menu"
@@ -21,6 +22,8 @@ func MenuSubrouter(path string) {
 
 	// 获取菜单
 	subrouter.HandleFunc("/query/{userid}", func(w http.ResponseWriter, r *http.Request) {
+		db := condb.Open()
+		defer db.Close()
 
 		userid := mux.Vars(r)["userid"]
 
@@ -31,7 +34,6 @@ func MenuSubrouter(path string) {
 		httpjsondone.SendRes(w, data, nil, nil)
 	})
 
-	menu.Init(db)
 	// 新增菜单
 	subrouter.HandleFunc("/add", menu.Add)
 	// 删除菜单

@@ -14,7 +14,6 @@ func RoleSubrouter(path string) {
 		w.Write([]byte("role\n"))
 	})
 
-	role.Init(db)
 	// 新增权限
 	subrouter.HandleFunc("/add", role.Add)
 	// 查询权限
