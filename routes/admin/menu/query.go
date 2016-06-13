@@ -48,7 +48,9 @@ func Query(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("query menu")
 
-	sql := "select * from mis.menulist t " +
+	sql := "select t.*, " +
+		"   (select sys_name from mis.syslist where sys_id = t.sys_id) as sys_name " +
+		"   from mis.menulist t " +
 		"	where ('" + sysid + "' is null or '" + sysid + "' = '' or t.SYS_ID = '" + sysid + "') " +
 		"	and ('" + sysname + "' is null or '" + sysname + "' = '' or t.SYS_ID in (select sys_id from mis.syslist where sys_name like '%" + sysname + "%')) " +
 		"   and ('" + roleid + "' is null or '" + roleid + "' = '' or t.MENU_ID in (select menu_id from rel_sys_role_menu where role_id = '" + roleid + "'))" +
