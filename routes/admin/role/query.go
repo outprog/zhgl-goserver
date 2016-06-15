@@ -53,7 +53,8 @@ func Query(w http.ResponseWriter, r *http.Request) {
 		"	and ('" + sysid + "' is null or '" + sysid + "' = '' or t.ROLE_ID in (select role_id from mis.rel_sys_role_menu where sys_id like '%" + sysid + "%')) " +
 		"	and ('" + sysname + "' is null or '" + sysname + "' = '' or t.ROLE_ID in (select role_id from mis.rel_sys_role_menu where sys_id in (select sys_id from mis.syslist where sys_name like '%" + sysname + "%'))) " +
 		"	and ('" + menuid + "' is null or '" + menuid + "' = '' or t.ROLE_ID in (select role_id from mis.rel_sys_role_menu where menu_id like '%" + menuid + "%')) " +
-		"	and ('" + menuname + "' is null or '" + menuname + "' = '' or t.ROLE_ID in (select role_id from mis.rel_sys_role_menu where menu_id in (select menu_id from mis.menulist where menu_name like '%" + menuname + "%')))"
+		"	and ('" + menuname + "' is null or '" + menuname + "' = '' or t.ROLE_ID in (select role_id from mis.rel_sys_role_menu where menu_id in (select menu_id from mis.menulist where menu_name like '%" + menuname + "%'))) " +
+		" order by role_id"
 
 	data, _ := gosqljson.QueryDbToMap(db, "upper", sql)
 
