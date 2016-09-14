@@ -41,7 +41,7 @@ func Query(w http.ResponseWriter, r *http.Request) {
 		"	where t.DEPT_ID like '%" + deptid + "%' " +
 		"	and t.DEPT_NAME like '%" + deptname + "%' " +
 		"	and t.MDEPT_ID like '%" + mdeptid + "%' " +
-		"	and t1.DEPT_NAME like '%" + mdeptname + "%' " +
+		"	and nvl(t1.DEPT_NAME, '/') like '%" + mdeptname + "%' " +
 		"	and t.DEPT_CLASS like '%" + deptclass + "%' " +
 		"	order by t.DEPT_ID"
 	data, _ := gosqljson.QueryDbToMap(db, "upper", sql)
