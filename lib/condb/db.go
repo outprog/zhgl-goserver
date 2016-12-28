@@ -24,8 +24,8 @@ func Open() *sql.DB {
 				nlsLang, os.Getenv("NLS_LANG"))
 		}
 	}
-	mydb, err := sql.Open("oci8", getDSN())
-	//mydb, err := sql.Open("mysql", "root@/mis")
+	//mydb, err := sql.Open("oci8", getDSN())
+	mydb, err := sql.Open("mysql", "root@/mis")
 	if err != nil {
 		log.Println(err.Error())
 	}
