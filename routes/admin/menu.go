@@ -42,5 +42,7 @@ func MenuSubrouter(path string) {
 	subrouter.HandleFunc("/update", menu.Update)
 	// 查询菜单
 	subrouter.HandleFunc("/query", menu.Query)
+	// 菜单排序
+	subrouter.HandleFunc("/sort", menu.Sort)
 
 }
