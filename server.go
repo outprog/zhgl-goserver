@@ -29,6 +29,7 @@ func main() {
 	routes.Init(services)
 	// services list
 	routes.AdminSubrouter("/admin")
+	//routes.PortalSubrouter("/portal")         // 分行门户
 
 	// Bind to a port and pass our router in
 	log.Println("services started at port:8000")
