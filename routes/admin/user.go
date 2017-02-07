@@ -35,5 +35,7 @@ func UserSubrouter(path string) {
 	subrouter.HandleFunc("/confirm-passwd", user.ConfirmPasswd)
 	// 修改密码
 	subrouter.HandleFunc("/update-passwd", user.UpdatePasswd)
+	// 重置密码
+	subrouter.HandleFunc("/reset-passwd", user.ResetPasswd)
 
 }
