@@ -30,7 +30,7 @@ func Query(w http.ResponseWriter, r *http.Request) {
 	name := body["name"]
 	seq := body["seq"]
 
-	log.Println("query class")
+	log.Println("portal/admin query class")
 
 	sql := "select * from app.portal_post_class t " +
 		" where ('" + id + "' is null or '" + id + "' = '' or '" + id + "' = t.id) " +
