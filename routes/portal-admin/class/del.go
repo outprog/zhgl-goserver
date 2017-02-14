@@ -51,7 +51,7 @@ func Del(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if rowCnt == 1 {
+	if rowCnt >= 1 {
 		res["stat"] = "true"
 		res["info"] = "删除成功"
 	} else {
