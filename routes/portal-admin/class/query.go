@@ -20,15 +20,17 @@ func Query(w http.ResponseWriter, r *http.Request) {
 		"info": "错误的输入格式",
 	}
 	template := map[string]string{
-		"id":   "",
-		"name": "",
-		"seq":  "",
+		"id":    "",
+		"name":  "",
+		"seq":   "",
+		"p_seq": "",
 	}
 
 	body := httpjsondone.GetBody(r)
 	id := body["id"]
 	name := body["name"]
 	seq := body["seq"]
+	pseq := body["p_seq"]
 
 	log.Println("portal/admin query class")
 
@@ -36,6 +38,7 @@ func Query(w http.ResponseWriter, r *http.Request) {
 		" where ('" + id + "' is null or '" + id + "' = '' or '" + id + "' = t.id) " +
 		" and ('" + name + "' is null or '" + name + "' = '' or '" + name + "' = t.name) " +
 		" and ('" + seq + "' is null or '" + seq + "' = '' or '" + seq + "' = t.seq) " +
+		" and ('" + pseq + "' is null or '" + pseq + "'= '' or (t.seq like '" + pseq + "%' and length(t.seq) = length('" + pseq + "') + 3)) " +
 		" order by t.seq"
 
 	data, _ := gosqljson.QueryDbToMap(db, "upper", sql)
