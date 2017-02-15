@@ -19,7 +19,7 @@ func ClassSubrouter(path string) {
 	// 删除分类
 	subrouter.HandleFunc("/del", class.Del)
 	// 修改分类
-	//subrouter.HandleFunc("/update", class.Update)
+	subrouter.HandleFunc("/update", class.Update)
 	// 查询分类
 	subrouter.HandleFunc("/query", class.Query)
 
