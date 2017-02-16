@@ -17,6 +17,7 @@ func PortalAdminSubrouter(path string) {
 	// 初始化子路由全局变量
 	portalAdmin.Init(subrouter)
 	// 子路由配置
+	portalAdmin.PostSubrouter("/post")
 	portalAdmin.ClassSubrouter("/class")
 
 }
