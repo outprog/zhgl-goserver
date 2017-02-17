@@ -2,6 +2,7 @@ package post
 
 import (
 	"log"
+	"math"
 	"net/http"
 	"strconv"
 
@@ -57,8 +58,10 @@ func QueryList(w http.ResponseWriter, r *http.Request) {
 		"and ('" + stat + "' is null or '" + stat + "' = '' or '" + stat + "' = t.stat)"
 
 	// 获取总页数
-	sql := "select floor(count(*)/10 + 1) as pages from portal_post t " + where
-	pages, _ := gosqljson.QueryDbToMap(db, "upper", sql)
+	sql := "select count(*)/10 as pages from portal_post t " + where
+	pagesbase, _ := gosqljson.QueryDbToMap(db, "upper", sql)
+	pagesfloat, _ := strconv.ParseFloat(pagesbase[0]["PAGES"], 64)
+	pages := int(math.Ceil(pagesfloat))
 
 	// 查询列表
 	// 设置页码
@@ -86,7 +89,7 @@ func QueryList(w http.ResponseWriter, r *http.Request) {
 
 	data, _ := gosqljson.QueryDbToMap(db, "upper", sql)
 	res["stat"] = "true"
-	res["info"] = "{'num': '" + num + "', 'pages': '" + pages[0]["PAGES"] + "'}"
+	res["info"] = "{'num': '" + num + "', 'pages': '" + strconv.Itoa(pages) + "'}"
 	httpjsondone.SendRes(w, data, res, template)
 
 }
