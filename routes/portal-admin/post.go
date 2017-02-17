@@ -17,7 +17,7 @@ func PostSubrouter(path string) {
 	// 新增文章
 	subrouter.HandleFunc("/add", post.Add)
 	// 删除文章
-	//subrouter.HandleFunc("/del", post.Del)
+	subrouter.HandleFunc("/del", post.Del)
 	// 修改文章
 	//subrouter.HandleFunc("/update", post.Update)
 	// 查询文章列表
