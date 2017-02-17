@@ -20,7 +20,7 @@ func PostSubrouter(path string) {
 	//subrouter.HandleFunc("/del", post.Del)
 	// 修改文章
 	//subrouter.HandleFunc("/update", post.Update)
-	// 查询文章
-	//subrouter.HandleFunc("/query", post.Query)
+	// 查询文章列表
+	subrouter.HandleFunc("/querylist", post.QueryList)
 
 }
