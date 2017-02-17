@@ -22,5 +22,7 @@ func PostSubrouter(path string) {
 	//subrouter.HandleFunc("/update", post.Update)
 	// 查询文章列表
 	subrouter.HandleFunc("/querylist", post.QueryList)
+	// 查询文章详情
+	subrouter.HandleFunc("/querydetail", post.QueryDetail)
 
 }
