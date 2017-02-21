@@ -32,7 +32,12 @@ func QueryDetail(w http.ResponseWriter, r *http.Request) {
 	log.Println("portal/admin query post detail")
 
 	// 查询语句拼装
-	sql := "select * from portal_post t where t.id ='" + id + "'"
+	sql := "select t.*, " +
+		"(select v.name from app.portal_post_class v where v.id = t.class1) as class1_name, " +
+		"(select v.name from app.portal_post_class v where v.id = t.class2) as class2_name, " +
+		"(select v.USER_NAME from mis.userlist v where v.USER_ID = t.user_id) as user_name, " +
+		"(select v.DEPT_NAME from mis.department v where v.DEPT_ID = t.dept_id) as dept_name " +
+		"from portal_post t where t.id ='" + id + "'"
 
 	data, _ := gosqljson.QueryDbToMap(db, "upper", sql)
 	res["stat"] = "true"
