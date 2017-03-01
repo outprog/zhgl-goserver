@@ -24,5 +24,7 @@ func PostSubrouter(path string) {
 	subrouter.HandleFunc("/querylist", post.QueryList)
 	// 查询文章详情
 	subrouter.HandleFunc("/querydetail", post.QueryDetail)
+	// 增加点击率
+	subrouter.HandleFunc("/hit", post.Hit)
 
 }

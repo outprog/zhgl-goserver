@@ -19,5 +19,6 @@ func PortalAdminSubrouter(path string) {
 	// 子路由配置
 	portalAdmin.PostSubrouter("/post")
 	portalAdmin.ClassSubrouter("/class")
+	portalAdmin.VisitorSubrouter("/visitor")
 
 }

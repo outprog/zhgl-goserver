@@ -30,7 +30,6 @@ func main() {
 	// services list
 	routes.AdminSubrouter("/admin")              // 平台基本管理
 	routes.JsonIp("/jsonip")                     // 获取IP
-	routes.PortalSubrouter("/portal")            // 分行门户
 	routes.PortalAdminSubrouter("/portal/admin") // 分行门户管理
 
 	// Bind to a port and pass our router in
