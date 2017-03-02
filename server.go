@@ -31,6 +31,7 @@ func main() {
 	routes.AdminSubrouter("/admin")              // 平台基本管理
 	routes.JsonIp("/jsonip")                     // 获取IP
 	routes.PortalAdminSubrouter("/portal/admin") // 分行门户管理
+	routes.ItsmSubrouter("/itsm")                // 信息服务管理
 
 	// Bind to a port and pass our router in
 	log.Println("services started at port:8000")
