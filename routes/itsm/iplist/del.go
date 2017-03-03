@@ -32,7 +32,7 @@ func Del(w http.ResponseWriter, r *http.Request) {
 	log.Println("itsm delete ip")
 
 	sql := "delete from app.itsm_ip_list " +
-		"   where ip like '" + ip + "%'"
+		"   where ip = '" + ip + "'"
 
 	upres, err := db.Exec(sql)
 	if err != nil {
