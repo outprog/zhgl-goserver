@@ -36,7 +36,9 @@ func Query(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("itsm iplist query")
 
-	sql := "select * from app.itsm_ip_list t " +
+	sql := "select t.*, " +
+		" (select v.user_name from mis.userlist v where v.user_id = t.user_id) as user_name " +
+		" from app.itsm_ip_list t " +
 		" where ('" + ip + "' is null or '" + ip + "' = '' or '" + ip + "' = t.ip) " +
 		" and ('" + mac + "' is null or '" + mac + "' = '' or '" + mac + "' = t.mac) " +
 		" and ('" + userid + "' is null or '" + userid + "' = '' or '" + userid + "' = t.user_id) " +
