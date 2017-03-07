@@ -23,14 +23,17 @@ func QueryList(w http.ResponseWriter, r *http.Request) {
 		"info": "错误的输入格式",
 	}
 	template := map[string]string{
-		"id":      "",
-		"title":   "",
-		"content": "",
-		"class1":  "",
-		"class2":  "",
-		"user_id": "",
-		"dept_id": "",
-		"num":     "",
+		"id":        "",
+		"title":     "",
+		"content":   "",
+		"class1":    "",
+		"class2":    "",
+		"user_id":   "",
+		"dept_id":   "",
+		"num":       "",
+		"datelimit": "",
+		"scope":     "",
+		"all":       "",
 	}
 
 	body := httpjsondone.GetBody(r)
@@ -46,6 +49,9 @@ func QueryList(w http.ResponseWriter, r *http.Request) {
 	if body["num"] != "" {
 		num = body["num"]
 	}
+	datelimit := body["datelimit"]
+	all := body["all"]
+
 	log.Println("portal/admin query list")
 
 	// 条件语句
@@ -57,6 +63,15 @@ func QueryList(w http.ResponseWriter, r *http.Request) {
 		"and ('" + userid + "' is null or '" + userid + "' = '' or '" + userid + "' = t.user_id) " +
 		"and ('" + deptid + "' is null or '" + deptid + "' = '' or '" + deptid + "' = t.dept_id) " +
 		"and ('" + stat + "' is null or '" + stat + "' = '' or '" + stat + "' = t.stat)  "
+
+	// 判断是否有时间限制
+	if datelimit != "" {
+		where += " and t.added_date > date_sub(now(), interval " + datelimit + " day) "
+	}
+	// 判断是否有为标题+内容查询
+	if all != "" {
+		where += " and ( t.title like '%" + all + "%' or t.content like '%" + all + "%') "
+	}
 
 	// 获取结果数和总页数
 	sql := "select count(*) as pages from portal_post t " + where
