@@ -26,5 +26,7 @@ func PostSubrouter(path string) {
 	subrouter.HandleFunc("/querydetail", post.QueryDetail)
 	// 增加点击率
 	subrouter.HandleFunc("/hit", post.Hit)
+	// 查询有封面的文章
+	subrouter.HandleFunc("/querycover", post.QueryCover)
 
 }
