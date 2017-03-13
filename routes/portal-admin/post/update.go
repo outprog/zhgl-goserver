@@ -3,6 +3,7 @@ package post
 import (
 	"log"
 	"net/http"
+	"strings"
 
 	"zhgl-goserver/lib/condb"
 	"zhgl-goserver/lib/httpjsondone"
@@ -69,7 +70,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		"`id` =                 '" + id + "', " +
 		"`title` =              '" + title + "', " +
 		"`title_hide` =         " + titlehide + ", " +
-		"`content` =            '" + content + "', " +
+		"`content` =            '" + strings.Replace(content, "'", "\\'", -1) + "', " +
 		"`content_hide` =       " + contenthide + ", " +
 		"`class1` =             '" + class1 + "', " +
 		"`class2` =             '" + class2 + "', " +

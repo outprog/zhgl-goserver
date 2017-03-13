@@ -3,6 +3,7 @@ package post
 import (
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/satori/go.uuid"
 
@@ -97,7 +98,7 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		" '" + id + "'," +
 		" '" + title + "'," +
 		" " + titlehide + "," +
-		" '" + content + "'," +
+		" '" + strings.Replace(content, "'", "\\'", -1) + "'," +
 		" " + contenthide + "," +
 		" '" + class1 + "'," +
 		" '" + class2 + "'," +
