@@ -34,6 +34,7 @@ func QueryList(w http.ResponseWriter, r *http.Request) {
 		"datelimit": "",
 		"scope":     "",
 		"all":       "",
+		"search":    "",
 	}
 
 	body := httpjsondone.GetBody(r)
@@ -51,6 +52,7 @@ func QueryList(w http.ResponseWriter, r *http.Request) {
 	}
 	datelimit := body["datelimit"]
 	all := body["all"]
+	search := body["search"]
 
 	log.Println("portal/admin query list")
 
@@ -99,9 +101,13 @@ func QueryList(w http.ResponseWriter, r *http.Request) {
 	}
 	page := (inum - 1) * 10
 	// 查询语句拼装
+	contentsql := " "
+	if search == "true" {
+		contentsql = "fnStripTags(t.content) as content,  "
+	}
 	sql = "select t.id,  " +
 		"t.title,  " +
-		"fnStripTags(t.content) as content,  " +
+		contentsql +
 		"(select v.name from portal_post_class v where v.id = t.class1) as class1_name,  " +
 		"(select v.name from portal_post_class v where v.id = t.class2) as class2_name, " +
 		"(select v.user_name from mis.userlist v where v.user_id = t.user_id) as user_name,  " +
