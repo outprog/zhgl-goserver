@@ -112,6 +112,7 @@ func QueryList(w http.ResponseWriter, r *http.Request) {
 		"(select v.name from portal_post_class v where v.id = t.class2) as class2_name, " +
 		"(select v.user_name from mis.userlist v where v.user_id = t.user_id) as user_name,  " +
 		"(select v.dept_name from mis.department v where v.dept_id =t.dept_id) as dept_name,  " +
+		"t.cover,  " +
 		"t.added_date,  " +
 		"t.hits " +
 		"from portal_post t " +
